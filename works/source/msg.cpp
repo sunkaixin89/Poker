@@ -8,11 +8,11 @@
 using namespace std;
 void MsgProcessor::ResetRoundStatus()
  {
-	 m_bAllIn = false;
+		m_rs = RS_BEGIN;
  }
  int MsgProcessor::ProcessMsg(char* msg)
 {
-	 vector<string> vecMsg;
+	vector < string > vecMsg;
 
 	string strMsg = msg;
 	string strset = "\n";
@@ -22,14 +22,13 @@ void MsgProcessor::ResetRoundStatus()
 	string singleMsg = "";
 	do
 	{
-
-		size_t enterPos = strMsg.find_first_of(strset, prevBeginPos);
+		size_t enterPos = strMsg.find(strset, prevBeginPos);
 		if (enterPos != string::npos)
 		{
 			string line = strMsg.substr(prevBeginPos,
 					enterPos - prevBeginPos + 1);
 			singleMsg += line;
-			size_t fixPos = line.find_first_of('/', 0);
+			size_t fixPos = line.find('/', 0);
 			if (fixPos > 0)
 			{
 				if (keyWord == "")
@@ -44,11 +43,8 @@ void MsgProcessor::ResetRoundStatus()
 					vecMsg.push_back(singleMsg);
 					singleMsg = "";
 					keyWord = "";
-
-
 				}
 			}
-			//cout<<line.c_str();
 		}
 		else
 		{
@@ -57,44 +53,97 @@ void MsgProcessor::ResetRoundStatus()
 			singleMsg += line;
 			vecMsg.push_back(singleMsg);
 
-			// cout<<line.c_str();
 			break;
 		}
 		prevBeginPos = enterPos + 1;
 	} while (1);
 
-	for(int i = 0; i < vecMsg.size(); ++i)
+	for (int i = 0; i < vecMsg.size(); ++i)
 	{
-        m_pokergame.prase(vecMsg[i]);
+		m_pokergame.prase(vecMsg[i]);
 		m_vecMsg.push_back(vecMsg[i]);
-		if(vecMsg[i].find_first_of("seat", 0) == 0)
-					{
-						ResetRoundStatus();
-						m_RoundCount++;
-					}
-					else if(vecMsg[i].find_first_of("inquire", 0) == 0)
-					{
-						if (1 ||  m_bAllIn == false)
-						{
-							//char szMsg[] = "call \n";
+		if (vecMsg[i].find("seat") == 0)//座次信息，包含庄家，小盲注，大盲注和其他玩家筹码和金币数
+		{
+			ResetRoundStatus();
+			m_RoundCount++;
+		}
+		else if (vecMsg[i].find("blind") == 0)	//小大盲注信息
+		{
 
-							string s = m_strategy->action();
-                            				const char* szMsg = s.c_str();
-							send(m_socket, szMsg, strlen(szMsg), 0);
-							m_bAllIn = true;
-						}
-					}
-					else if(vecMsg[i].find_first_of("game-over", 0) == 0)
-					{
-							for(int i = 0; i < m_vecMsg.size(); ++i)
-								cout<<m_vecMsg[i].c_str()<<endl<<"------------"<<endl<<endl<<endl;
-							return 1;
-					}
+		}
+		else if (vecMsg[i].find("hold") == 0)				//手牌消息
+		{
+
+		}
+		else if (vecMsg[i].find("inquire") == 0)			//询问消息
+		{
+			if (m_rs != RS_ALL_IN && m_rs != RS_FOLD)
+			{
+				SendMsgToServer();
+			}
+		}
+		else if (vecMsg[i].find("flop", 0) == 0)				//公牌消息
+		{
+
+		}
+		else if (vecMsg[i].find("turn") == 0)				//转牌消息
+		{
+
+		}
+		else if (vecMsg[i].find("river") == 0)				//河牌消息
+		{
+
+		}
+		else if (vecMsg[i].find("showdown") == 0)			//摊牌消息
+		{
+
+		}
+		else if (vecMsg[i].find("pot-win") == 0)			//彩池分配消息
+		{
+
+		}
+		else if (vecMsg[i].find("game-over") == 0)		//本场比赛结束
+		{
+			for (int i = 0; i < m_vecMsg.size(); ++i)
+				cout << m_vecMsg[i].c_str() << endl << "------------" << endl
+						<< endl << endl;
+			return 1;
+		}
 
 	}
-
-
 
 	return 0;
 }
 
+
+ void MsgProcessor::SendMsgToServer()
+{
+	if (m_strategyName == "check")	//当前策略总是让牌
+	{
+		string s = m_pokergame.GetStrategy()->ActionAsAllCheck();
+		const char* szMsg = s.c_str();
+		send(m_socket, szMsg, strlen(szMsg), 0);
+		m_rs = RS_CHECK;
+	}
+	else if (m_strategyName == "call")	//当前策略总是跟注
+	{
+		string s =  m_pokergame.GetStrategy()->ActionAsAllCall();
+		const char* szMsg = s.c_str();
+		send(m_socket, szMsg, strlen(szMsg), 0);
+		m_rs = RS_CALL;
+	}
+	else if (m_strategyName == "allin")	//当前策略总是全押
+	{
+		string s =  m_pokergame.GetStrategy()->ActionAsAllAllin();
+		const char* szMsg = s.c_str();
+		send(m_socket, szMsg, strlen(szMsg), 0);
+		m_rs = RS_ALL_IN;
+	}
+	else
+	{
+		string s =  m_pokergame.GetStrategy()->Action();
+		const char* szMsg = s.c_str();
+		send(m_socket, szMsg, strlen(szMsg), 0);
+
+	}
+}

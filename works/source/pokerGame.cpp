@@ -1,8 +1,8 @@
 #include "pokerGame.h"
 #include<algorithm>
-#pragma warning(disable:4996)
 
-pokerGame::pokerGame():turn(0),total(0){
+
+pokerGame::pokerGame():turn(0),total(0),m_mainStrategy(this){
 	point_map.insert(pair<string, int>("2", 2));
 	point_map.insert(pair<string, int>("3", 3));
 	point_map.insert(pair<string, int>("4", 4));
@@ -43,7 +43,10 @@ pokerGame::pokerGame():turn(0),total(0){
 
 pokerGame::~pokerGame(){
 }
-
+MainStrategy* pokerGame::GetStrategy()
+{
+	return &m_mainStrategy;
+}
 bool pokerGame::prase(string &command){
 	char type[15];
 	char *cmd_str = const_cast<char *>(command.c_str());
@@ -227,6 +230,7 @@ bool pokerGame::praseInquire(string &command){
 	stringstream ss_stream;
 	ss_stream << command;
 	string type;
+	bool bFirst = true;
 	while (true){
 		ss_stream >> type;
 		if (type == "inquire/" || type == "total"){
@@ -249,7 +253,10 @@ bool pokerGame::praseInquire(string &command){
 			players[pid].action = action_map[action];
 			players[pid].action_money = bet-players[pid].bet;
 			players[pid].bet = bet;
-			this->current = players[pid].action_money;
+			if(bFirst){
+				this->current = players[pid].action_money;
+				bFirst = false;
+			}
 		}
 	}
 	return true;

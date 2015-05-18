@@ -7,11 +7,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include "msg.h"
-#ifdef CALL_STRATEGY
-#include "callStrategy.h"
-#else
-#include "simpleStrategy.h"
-#endif
+
 
 using namespace std;
 
@@ -30,6 +26,10 @@ int main(int argc, char* argv[])
 	char* clientIP = argv[3];
 	int clientPort = atoi(argv[4]);
 	char* clientID = argv[5];
+
+	char strategyName[28] = "";
+	if(argc >= 7)
+		strcpy(strategyName, argv[6]);
 
 	int socket_id = -1;
 	if ((socket_id = socket(AF_INET, SOCK_STREAM, 0)) == -1)
@@ -77,14 +77,7 @@ int main(int argc, char* argv[])
 	send(socket_id, msg, strlen(msg), 0);
 
 
-	MsgProcessor mp(socket_id);
-#ifdef CALL_STRATEGY
-	callStrategy csg;
-	mp.SetStrategy(&csg);
-#else
-        SimpleStrategy stg;
-	mp.SetStrategy(&stg);
-#endif
+	MsgProcessor mp(socket_id, strategyName);
 
 	do
 	{

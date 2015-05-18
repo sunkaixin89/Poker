@@ -2,16 +2,10 @@ CC=g++
 CFLAGS= -g -c
 TARGET=../target
 SOURCE=../source
-CALLGAME= -D CALL_STRATEGY
-all:game cgame
 
-COBJS= cgame.o msg.o pokerGame.o strategy.o callStrategy.o
-OBJS = game.o msg.o pokerGame.o strategy.o simpleStrategy.o
+all:game
 
-cgame :$(COBJS)
-	$(CC) -g -o $(TARGET)/cgame $(COBJS)
-cgame.o : $(SOURCE)/game.cpp
-	$(CC) $(CFLAGS) $(CALLGAME) -o $@ $<
+OBJS = game.o msg.o pokerGame.o mainStrategy.o
 
 game : $(OBJS)
 	$(CC) -g -o $(TARGET)/game $(OBJS)
@@ -28,10 +22,8 @@ pokerGame.o:$(SOURCE)/pokerGame.cpp
 strategy.o :$(SOURCE)/strategy.cpp
 	$(CC) $(CFLAGS) -o $@ $<
 
-callStrategy.o :$(SOURCE)/callStrategy.cpp
+mainStrategy.o:$(SOURCE)/MainStrategy.cpp
 	$(CC) $(CFLAGS) -o $@ $<
-
-simpleStrategy.o :$(SOURCE)/simpleStrategy.cpp
-	$(CC) $(CFLAGS) -o $@ $<
+	
 clean:
 	rm *.o

@@ -1,6 +1,6 @@
 #pragma once
 /**
-ÓÎÏ·¼ÇÂ¼ºËÐÄÀà
+ï¿½ï¿½Ï·ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 class pokerGame
 create by skx
 2015/5/15
@@ -13,35 +13,39 @@ create by skx
 #include<string.h>
 #include<stdio.h>
 #include<map>
+#include "MainStrategy.h"
 
 using namespace std;
 class pokerGame{
 public:
-	map<string, int> color_map; //»¨É«Ó³Éä
-	map<string, int> action_map; //ÐÐ¶¯Ó³Éä
-	map<string, int> point_map; //ÅÆµãÊýÓ³Éä
-	map<string, int> poker_map; //ÅÆÐÍÓ³Éä
-	map<int,Player> players; //±íÊ¾Íæ¼Ò
-	vector<Poker> common_poker; //¹«¹²ÅÆ
-	vector<Poker> hold_poker; //±íÊ¾ÊÖÅÆ
-	int total;  //½±³Ø×ÜÊý
-	int current; //µ±Ç°¸ú×¢´óÐ¡
-	int turn;  //±íÊ¾µÚ¼¸ÂÖ
-	int cround; //±íÊ¾µ±Ç°ÂÖÊý
-	static const int ROUND_REGISTER = 0; //×¢²áÂÖ
-	static const int ROUND_SEAT = 1; //¹«²¼×ùÎ»ÂÖ
+	MainStrategy* GetStrategy();
+
+public:
+	map<string, int> color_map; //ï¿½ï¿½É«Ó³ï¿½ï¿½
+	map<string, int> action_map; //ï¿½Ð¶ï¿½Ó³ï¿½ï¿½
+	map<string, int> point_map; //ï¿½Æµï¿½ï¿½ï¿½Ó³ï¿½ï¿½
+	map<string, int> poker_map; //ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½
+	map<int,Player> players; //ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½
+	vector<Poker> common_poker; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	vector<Poker> hold_poker; //ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+	int total;  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	int current; //ï¿½ï¿½Ç°ï¿½ï¿½×¢ï¿½ï¿½Ð¡
+	int turn;  //ï¿½ï¿½Ê¾ï¿½Ú¼ï¿½ï¿½ï¿½
+	int cround; //ï¿½ï¿½Ê¾ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½
+	static const int ROUND_REGISTER = 0; //×¢ï¿½ï¿½ï¿½ï¿½
+	static const int ROUND_SEAT = 1; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	static const int ROUND_BLIND = 2; //Ã¤×¢
-	static const int ROUND_HOLD = 3; //·¢ÅÆÂÖ
-	static const int ROUND_FLOP = 4; //¹«¹²ÅÆÂÖ
-	static const int ROUND_TURN = 5; //×ªÅÆÂÖ
-	static const int ROUND_RIVER = 6; //ºÓÅÆÂÖ
-	static const int ROUND_SHOW_MESSAGE = 7; //±ÈÅÆÂÖ
-	static const int ROUND_WIN_POT = 8; //½±³Ø¹«²¼ÂÖ
-	static const int ROUND_GAME_OVER = 9; //½áÊøÂÖ
+	static const int ROUND_HOLD = 3; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	static const int ROUND_FLOP = 4; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	static const int ROUND_TURN = 5; //×ªï¿½ï¿½ï¿½ï¿½
+	static const int ROUND_RIVER = 6; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	static const int ROUND_SHOW_MESSAGE = 7; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	static const int ROUND_WIN_POT = 8; //ï¿½ï¿½ï¿½Ø¹ï¿½ï¿½ï¿½ï¿½ï¿½
+	static const int ROUND_GAME_OVER = 9; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	pokerGame();
 	~pokerGame();
 	bool prase(string &command);
-	//´òÓ¡ÐÅÏ¢
+	//ï¿½ï¿½Ó¡ï¿½ï¿½Ï¢
 	friend ostream& operator<< (ostream &os, pokerGame &st){
 		//os << st.name << "------" << st.age << "------" << st.address << endl;
 		return os;
@@ -55,5 +59,7 @@ private:
 	bool praseTurn(string &command);
 	bool praseRiver(string &command);
 	bool praseShowDown(string &command);
+
+	MainStrategy			m_mainStrategy;
 };
 
