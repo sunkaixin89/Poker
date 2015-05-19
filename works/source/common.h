@@ -24,6 +24,9 @@
 typedef struct Poker{
 	int point;
 	int color;
+    bool operator<(Poker other){
+        return this->point < other.point;    
+    }
 }Poker;
 
 //动作类别
@@ -51,6 +54,12 @@ typedef struct Poker{
 #define POKER_FOUR_OF_A_KIND 8 //四条
 #define POKER_STRAIGHT_FLUSH 9 //同花顺
 
+#include<vector>
+using namespace std;
+
+int pokerType(vector<Poker> &pokers,int &highpt);
+int pokerTypeTwo(vector<Poker> &pokers);
+int pokerTypeAll(vector<Poker> &pokers,int &highpt);
 
 //玩家
 typedef struct Player{
@@ -64,3 +73,4 @@ typedef struct Player{
 	int action_money; //操作钱
 	int nut_hand; //上一次成牌类型
 }Player;
+
