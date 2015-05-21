@@ -60,10 +60,10 @@ double ProCalculator::CalProLessThanMe(vector<Poker> myPoker, vector<Poker>commo
 		return 0.0;
 	}
 	//获取我牌的类型和最大的点数
-	int myHighPt;
 	int myPokerType;
 	myPoker.insert(myPoker.end(), commonPoker.begin(), commonPoker.end());
-	myPokerType = pokerTypeAll(myPoker, myHighPt);
+	vector<Poker> myMaxPoker;
+	myPokerType = pokerTypeAll(myPoker, myMaxPoker);
 
 	//验证我的牌和公共牌是否有效
 	if(!ValidatePoker(myPoker))
@@ -100,10 +100,10 @@ double ProCalculator::CalProLessThanMe(vector<Poker> myPoker, vector<Poker>commo
 			enumPoker.push_back(allPoker[i]);
 	}
 
+
 	//枚举比我小的牌的种数
 	int totalNum = 0;
 	int lessThanMeNum = 0;
-	int moreThanMeNum = 0;
 	for(i = 0; i < enumPoker.size() -1; ++i)
 	{
 		for(j =  i + 1; j < enumPoker.size(); ++j)
@@ -112,17 +112,37 @@ double ProCalculator::CalProLessThanMe(vector<Poker> myPoker, vector<Poker>commo
 			otherPoker.push_back(enumPoker[i]);
 			otherPoker.push_back(enumPoker[j]);
 
-			int otherHighPt;
 			int otherPokerType;
-			otherPokerType = pokerTypeAll(otherPoker, otherHighPt);
-			if((otherPokerType < myPokerType) || (otherPokerType == myPokerType && otherHighPt < myHighPt))
+			vector<Poker> otherMaxPoker;
+			otherPokerType = pokerTypeAll(otherPoker, otherMaxPoker);
+
+
+			if((otherPokerType < myPokerType))
 				lessThanMeNum ++;
-			else
-				moreThanMeNum ++;
+			else if(otherPokerType == myPokerType)
+			{
+				int k = 0;
+				for(k = 0; k < 5; ++k)
+				{
+					if(myMaxPoker[k].point == otherMaxPoker[k].point)
+						continue;
+					if(myMaxPoker[k].point > otherMaxPoker[k].point)
+					{
+						lessThanMeNum ++;
+						break;
+					}
+				}
+				/*
+				if(k == 5)
+					lessThanMeNum ++;
+					*/
+			}
 
 			totalNum++;
 		}
 	}
+
+	printf("totolNum:%d,lessThanMeNum:%d\n", totalNum, lessThanMeNum);
 
 	//计算概率
 	int restPokerNum = 52 - myPoker.size();

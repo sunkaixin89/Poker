@@ -61,7 +61,7 @@ using namespace std;
 
 int pokerType(vector<Poker> &pokers,int &highpt);
 int pokerTypeTwo(vector<Poker> &pokers);
-int pokerTypeAll(vector<Poker> &pokers,int &highpt);
+int pokerTypeAll(vector<Poker> &pokers,vector<Poker> &maxpoker);
 
 //玩家
 typedef struct Player{

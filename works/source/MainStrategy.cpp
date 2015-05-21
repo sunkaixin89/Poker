@@ -75,8 +75,23 @@ string MainStrategy::Action(){
 			|| m_pPokerGame->cround == pokerGame::ROUND_TURN
 			|| m_pPokerGame->cround == pokerGame::ROUND_RIVER)
 	{
+
+		int otherPlayersNum = 0;
+		map<int,Player>::iterator it =  m_pPokerGame->players.begin();
+		while(it != m_pPokerGame->players.end())
+		{
+			if(it->second.action != ACTION_FOLD)
+			otherPlayersNum++;
+			it++;
+		}
+		otherPlayersNum--;
+
+		if(otherPlayersNum == 0)
+			return "check \n";
+
 		double p = ProCalculator::CalProLessThanMe(m_pPokerGame->hold_poker, m_pPokerGame->common_poker,
-				m_pPokerGame->players.size() - 1);
+				otherPlayersNum);
+
 		if(p > 0.7)
 			return "raise 200 \n";
 		else if(p > 0.6)
@@ -84,7 +99,9 @@ string MainStrategy::Action(){
 		else if(p > 0.35)
 			return "check \n";
 		else
+		{
 			return "fold \n";
+		}
 	}
 	else
 	{

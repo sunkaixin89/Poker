@@ -286,7 +286,7 @@ bool pokerGame::praseInquire(string &command){
 	return true;
 }
 bool pokerGame::praseWinPot(string &command){
-	return true;
+
     stringstream ss_stream;
     ss_stream << command;
     string type;
@@ -312,7 +312,6 @@ bool pokerGame::praseWinPot(string &command){
     return true;
 }
 bool pokerGame::praseNotify(string &command){
-	return true;
 	stringstream ss_stream;
 	ss_stream << command;
 	string type;

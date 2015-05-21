@@ -94,7 +94,7 @@ int emumPokers(vector<Poker> &pokers,
    return 1;
 }
 
-int pokerTypeAll(vector<Poker> &pokers,int &highpt){
+int pokerTypeAll(vector<Poker> &pokers,vector<Poker> &maxpoker){
     vector<vector<Poker> > poker_types;
     vector<Poker> pk;
     emumPokers(pokers,poker_types,pk,0,0);
@@ -106,9 +106,18 @@ int pokerTypeAll(vector<Poker> &pokers,int &highpt){
         int ptype= pokerType(poker_types[i],chpt);
         if(ptype > maxtype){
             maxtype = ptype;
-            highpt = chpt;
+            maxpoker = poker_types[i];
         }else if(ptype == maxtype){
-            highpt = chpt;
+        	for(int j= 0;j < maxpoker.size();j++){
+        		if(maxpoker[j].point == poker_types[i][j].point)
+        			continue;
+        		else if(maxpoker[j].point < poker_types[i][j].point ){
+        			maxpoker = poker_types[i];
+        			break;
+        		}
+
+        	}
+
         }   
        /* 
         for(int j = 0;j < 5;j++){
