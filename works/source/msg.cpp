@@ -12,6 +12,8 @@ void MsgProcessor::ResetRoundStatus()
  }
  int MsgProcessor::ProcessMsg(char* msg)
 {
+	 //m_orgMsg.push_back(msg);
+
 	vector < string > vecMsg;
 
 	string strMsg = msg;
@@ -20,6 +22,7 @@ void MsgProcessor::ResetRoundStatus()
 	string keyWord = "";
 
 	string singleMsg = "";
+
 	do
 	{
 		size_t enterPos = strMsg.find(strset, prevBeginPos);
@@ -58,13 +61,15 @@ void MsgProcessor::ResetRoundStatus()
 		prevBeginPos = enterPos + 1;
 	} while (1);
 
+
+
 	for (int i = 0; i < vecMsg.size(); ++i)
 	{
 		m_pokergame.prase(vecMsg[i]);
 		m_vecMsg.push_back(vecMsg[i]);
 		if (vecMsg[i].find("seat") == 0)//座次信息，包含庄家，小盲注，大盲注和其他玩家筹码和金币数
 		{
-			ResetRoundStatus();
+			//ResetRoundStatus();
 			m_RoundCount++;
 		}
 		else if (vecMsg[i].find("blind") == 0)	//小大盲注信息
@@ -77,10 +82,9 @@ void MsgProcessor::ResetRoundStatus()
 		}
 		else if (vecMsg[i].find("inquire") == 0)			//询问消息
 		{
-			if (m_rs != RS_ALL_IN && m_rs != RS_FOLD)
-			{
-				SendMsgToServer();
-			}
+
+			SendMsgToServer();
+
 		}
 		else if (vecMsg[i].find("flop", 0) == 0)				//公牌消息
 		{
@@ -104,9 +108,16 @@ void MsgProcessor::ResetRoundStatus()
 		}
 		else if (vecMsg[i].find("game-over") == 0)		//本场比赛结束
 		{
+			/*
 			for (int i = 0; i < m_vecMsg.size(); ++i)
 				cout << m_vecMsg[i].c_str() << endl << "------------" << endl
 						<< endl << endl;
+						*/
+
+/*
+			for(int i = 0; i < m_orgMsg.size(); ++i)
+				cout<< "!!!!!" << endl << m_orgMsg[i].c_str() << "!!!!!" << endl;
+*/
 			return 1;
 		}
 
@@ -125,6 +136,13 @@ void MsgProcessor::ResetRoundStatus()
 		send(m_socket, szMsg, strlen(szMsg), 0);
 		m_rs = RS_CHECK;
 	}
+	else if (m_strategyName == "raise")	//当前策略总是加注
+		{
+			string s =  m_pokergame.GetStrategy()->ActionAsAllRaise();
+			const char* szMsg = s.c_str();
+			send(m_socket, szMsg, strlen(szMsg), 0);
+			m_rs = RS_CALL;
+		}
 	else if (m_strategyName == "call")	//当前策略总是跟注
 	{
 		string s =  m_pokergame.GetStrategy()->ActionAsAllCall();
@@ -139,6 +157,19 @@ void MsgProcessor::ResetRoundStatus()
 		send(m_socket, szMsg, strlen(szMsg), 0);
 		m_rs = RS_ALL_IN;
 	}
+	else if (m_strategyName == "fold")	//当前策略总是弃牌
+		{
+			string s =  m_pokergame.GetStrategy()->ActionAsAllFold();
+			const char* szMsg = s.c_str();
+			send(m_socket, szMsg, strlen(szMsg), 0);
+			m_rs = RS_FOLD;
+		}
+	else if (m_strategyName == "random")	//当前策略总是随机
+		{
+			string s =  m_pokergame.GetStrategy()->ActionAsAllRandom();
+			const char* szMsg = s.c_str();
+			send(m_socket, szMsg, strlen(szMsg), 0);
+		}
 	else
 	{
 		string s =  m_pokergame.GetStrategy()->Action();

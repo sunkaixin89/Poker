@@ -24,10 +24,16 @@ public:
 	    static const int MID_LEVEL = 2;
 	    static const int BUTTOM_LEVEL = 3;
 
-	MainStrategy(pokerGame* pPokerGame):m_pPokerGame(pPokerGame){}
+	MainStrategy(pokerGame* pPokerGame);
+
+	//全弃牌策略
+	string ActionAsAllFold();
 
 	//全让牌策略
 	string ActionAsAllCheck();
+
+	//全加注策略
+	string ActionAsAllRaise();
 
 	//全跟注策略
 	string ActionAsAllCall();
@@ -35,6 +41,10 @@ public:
 	//全押策略
 	string ActionAsAllAllin();
 
+	//随机策略
+	string ActionAsAllRandom();
+
+	//
 	string Action();
 protected:
 	int HoldType();

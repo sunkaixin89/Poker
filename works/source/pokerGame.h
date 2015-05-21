@@ -54,12 +54,12 @@ private:
 	bool praseSeat(string &command);
 	bool praseBlind(string &command);
 	bool praseInquire(string &command);
+	bool praseNotify(string &command);
 	bool praseHold(string &command);
 	bool praseFlop(string &command);
 	bool praseTurn(string &command);
 	bool praseRiver(string &command);
 	bool praseShowDown(string &command);
-
+	bool praseWinPot(string &command);
 	MainStrategy			m_mainStrategy;
 };
-

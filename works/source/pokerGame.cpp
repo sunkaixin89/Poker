@@ -53,21 +53,45 @@ bool pokerGame::prase(string &command){
 	sscanf(cmd_str, "%[^/]", type);
 
 	if (strcmp(type, "seat")==0){
+
 		praseSeat(command);
+
 	}else if (strcmp(type, "blind")==0){
+
 		praseBlind(command);
+
 	}else if (strcmp(type, "river") == 0){
+
 		praseRiver(command);
+
 	}else if (strcmp(type, "flop") == 0){
+
 		praseFlop(command);
+
 	}else if (strcmp(type, "turn") == 0){
+
 		praseTurn(command);
+
 	}else if (strcmp(type, "inquire") == 0){
+
 		praseInquire(command);
+
 	}else if (strcmp(type, "hold") == 0){
+
 		praseHold(command);
+
 	}else if (strcmp(type, "showdown") == 0){
+
 		praseShowDown(command);
+
+	}else if(strcmp(type, "pot-win") == 0){
+
+		praseWinPot(command);
+
+	}else if(strcmp(type, "notify") == 0){
+
+		praseNotify(command);
+
 	}
 	return true;
 }
@@ -261,7 +285,68 @@ bool pokerGame::praseInquire(string &command){
 	}
 	return true;
 }
-
+bool pokerGame::praseWinPot(string &command){
+	return true;
+    stringstream ss_stream;
+    ss_stream << command;
+    string type;
+    for(int i = 0;i < players.size();i++){
+	players[i].win_last = false;
+	players[i].win_num = 0;
+    }
+    while (true){
+	ss_stream >> type;
+	if (type == "pot-win/"){
+	    continue;
+	}else if (type == "/pot-win"){
+	    break;
+	}else if (type.find_last_of(':') != string::npos){
+	     int pid;
+	     stringstream type_stream;
+	     type_stream << type;
+	     type_stream >> pid;
+	     players[pid].win_last = true;
+	     ss_stream >>players[pid].win_num;
+	}
+    }
+    return true;
+}
+bool pokerGame::praseNotify(string &command){
+	return true;
+	stringstream ss_stream;
+	ss_stream << command;
+	string type;
+	bool bFirst = true;
+	while (true){
+		ss_stream >> type;
+		if (type == "notify/" || type == "total"){
+			continue;
+		}else if (type == "/notify"){
+			break;
+		}else if (type == "pot:"){
+			ss_stream >> this->total;
+		}else{
+			int pid;
+			stringstream cvt;
+			cvt << type;
+			cvt >> pid;
+			ss_stream>>players[pid].jetton;
+			ss_stream >> players[pid].money;
+			int bet;
+			ss_stream >> bet;
+			string action;
+			ss_stream >> action;
+			players[pid].action = action_map[action];
+			players[pid].action_money = bet-players[pid].bet;
+			players[pid].bet = bet;
+			if(bFirst){
+				this->current = players[pid].action_money;
+				bFirst = false;
+			}
+		}
+	}
+	return true;
+}
 bool pokerGame::praseShowDown(string &command){
 	stringstream ss_stream;
 	ss_stream << command;
@@ -286,3 +371,5 @@ bool pokerGame::praseShowDown(string &command){
 	}
 	return true;
 }
+
+

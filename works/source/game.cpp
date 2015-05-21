@@ -6,6 +6,8 @@
 #include<netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <time.h>
+#include <sys/time.h>
 #include "msg.h"
 
 
@@ -73,25 +75,45 @@ int main(int argc, char* argv[])
         }
 
 	char msg[100];
-	sprintf(msg, "reg:%s %s \n", clientID, clientID);
+	sprintf(msg, "reg:%s %s %s \n", clientID, "BUG", "need_notify");
 	send(socket_id, msg, strlen(msg), 0);
+
+
 
 
 	MsgProcessor mp(socket_id, strategyName);
 
+	int msTime = 0;
+	int timeoutNum = 0;
 	do
 	{
-		char buffer[1024] = { 0 };
-		int re = recv(socket_id, buffer, 1024, 0);
+		char buffer[4096] =
+		{ 0 };
+		int re = recv(socket_id, buffer, 4096, 0);
 		if (re > 0)
 		{
 			buffer[re] = 0;
 
-			if(mp.ProcessMsg(buffer))
+			struct timeval tb;
+			struct timeval te;
+			gettimeofday(&tb, 0);
+
+			if (mp.ProcessMsg(buffer))
 				break;
+			gettimeofday(&te, 0);
+			int msTimeTemp = (int) ((1000000 * (te.tv_sec - tb.tv_sec) + te.tv_usec - tb.tv_usec) / 1000);
+			if(msTime < msTimeTemp)
+				msTime = msTimeTemp;
+			if(msTimeTemp > 450)
+			{
+				timeoutNum++;
+				if(timeoutNum >= 10)
+					break;
+			}
+
 		}
 	} while (1);
-
+	printf("time ms:%d\n", msTime);
 	close(socket_id);
 	return 0;
 }

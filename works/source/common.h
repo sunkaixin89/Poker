@@ -1,5 +1,7 @@
-#pragma once
-//¶¨Òå2~A
+
+#ifndef __COMMON__H__
+#define __COMMON__H__
+//å®šä¹‰2~A
 #define POINT_2 2
 #define POINT_3 3
 #define POINT_4 4
@@ -14,13 +16,13 @@
 #define POINT_K 13
 #define POINT_A 14
 
-//¶¨Òå»¨É«
-#define COLOR_HEATS 1   //ºìÌÒ
-#define COLOR_SPADES 2  //ºÚÌÒ
-#define COLOR_CLUBS 3   //Ã·»¨
-#define COLOR_DIAMONDS 4//·½Æ¬
+//å®šä¹‰èŠ±è‰²
+#define COLOR_HEATS 1   //çº¢æ¡ƒ
+#define COLOR_SPADES 2  //é»‘æ¡ƒ
+#define COLOR_CLUBS 3   //æ¢…èŠ±
+#define COLOR_DIAMONDS 4//æ–¹ç‰‡
 
-//¶¨ÒåÆË¿ËÅÆ
+//å®šä¹‰æ‰‘å…‹ç‰Œ
 typedef struct Poker{
 	int point;
 	int color;
@@ -29,30 +31,30 @@ typedef struct Poker{
     }
 }Poker;
 
-//¶¯×÷Àà±ğ
-#define ACTION_FOLD 1//ÆúÅÆ
-#define ACTION_CHECK 2//ÈÃÅÆ
-#define ACTION_RAISE 3//¼Ó×¢
-#define ACTION_CALL 4//¸ú×¢
-#define ACTION_ALL_IN 5//È«Ñ¹
-#define ACTION_BLIND 6//Ã¤×¢
+//åŠ¨ä½œç±»åˆ«
+#define ACTION_FOLD 1//å¼ƒç‰Œ
+#define ACTION_CHECK 2//è®©ç‰Œ
+#define ACTION_RAISE 3//åŠ æ³¨
+#define ACTION_CALL 4//è·Ÿæ³¨
+#define ACTION_ALL_IN 5//å…¨å‹
+#define ACTION_BLIND 6//ç›²æ³¨
 
-//Íæ¼ÒÀà±ğ
-#define TYPE_BIG_BLIND 1//´óÃ¤×¢
-#define TYPE_SMALL_BLIND 2//Ğ¡Ã¤×¢
-#define TYPE_BUTTON 3 //×¯¼Ò
-#define TYPE_COMMON 4 //ÆÕÍ¨
+//ç©å®¶ç±»åˆ«
+#define TYPE_BIG_BLIND 1//å¤§ç›²æ³¨
+#define TYPE_SMALL_BLIND 2//å°ç›²æ³¨
+#define TYPE_BUTTON 3 //åº„å®¶
+#define TYPE_COMMON 4 //æ™®é€š
 
-//ÅÆĞÍ
-#define POKER_HIGH_CARD 1//¸ßÅÆ
-#define POKER_ONE_PAIR 2//Ò»¶Ô
-#define POKER_TWO_PAIR 3 //Á½¶Ô
-#define POKER_THREE_OF_A_KIND 4 //ÈıÌõ
-#define POKER_STRAIGHT 5 //Ë³×Ó
-#define POKER_FLUSH 6 //Í¬»¨
-#define POKER_FULL_HOUSE 7 //ºùÂ«
-#define POKER_FOUR_OF_A_KIND 8 //ËÄÌõ
-#define POKER_STRAIGHT_FLUSH 9 //Í¬»¨Ë³
+//ç‰Œå‹
+#define POKER_HIGH_CARD 1//é«˜ç‰Œ
+#define POKER_ONE_PAIR 2//ä¸€å¯¹
+#define POKER_TWO_PAIR 3 //ä¸¤å¯¹
+#define POKER_THREE_OF_A_KIND 4 //ä¸‰æ¡
+#define POKER_STRAIGHT 5 //é¡ºå­
+#define POKER_FLUSH 6 //åŒèŠ±
+#define POKER_FULL_HOUSE 7 //è‘«èŠ¦
+#define POKER_FOUR_OF_A_KIND 8 //å››æ¡
+#define POKER_STRAIGHT_FLUSH 9 //åŒèŠ±é¡º
 
 #include<vector>
 using namespace std;
@@ -61,16 +63,23 @@ int pokerType(vector<Poker> &pokers,int &highpt);
 int pokerTypeTwo(vector<Poker> &pokers);
 int pokerTypeAll(vector<Poker> &pokers,int &highpt);
 
-//Íæ¼Ò
+//ç©å®¶
 typedef struct Player{
 	int pid;     //id
-	int type;    //ÀàĞÍ
-	int jetton;  //³ïÂë
-	int bet;     //¶Ä×¢
-	int money;   //½ğÇ®
-	int rank;    //ÅÅÃû
-	int action;  //²Ù×÷
-	int action_money; //²Ù×÷Ç®
-	int nut_hand; //ÉÏÒ»´Î³ÉÅÆÀàĞÍ
+	int type;    //ç±»å‹
+	int jetton;  //ç­¹ç 
+	int bet;     //èµŒæ³¨
+	int money;   //é‡‘é’±
+	int rank;    //æ’å
+	int action;  //æ“ä½œ
+	int action_money; //æ“ä½œé’±
+	int nut_hand; //ä¸Šä¸€æ¬¡æˆç‰Œç±»å‹
+	bool win_last; //åˆ¤æ–­ä¸Šä¸€æ¬¡æ˜¯å¦èƒœåˆ©
+	int  win_num; //è·èƒœé’±
 }Player;
+
+
+
+#endif
+
 

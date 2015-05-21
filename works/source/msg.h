@@ -25,24 +25,26 @@ public:
 	MsgProcessor(int socket_id, string strategyName)
 :m_socket(socket_id), m_strategyName(strategyName),m_pokergame()
 {
-		ResetRoundStatus();
+		//ResetRoundStatus();
 		m_RoundCount = 0;
 	}
 	 int ProcessMsg(char* msg);
 	 void SendMsgToServer();
 
+	 pokerGame	 			m_pokergame;
 	//void SetStrategy(strategy *stg){ m_strategy = stg; m_strategy->reg(&m_pokergame);};
 protected:
 	 void ResetRoundStatus();
 private:
 	 string 	m_strategyName;
 	int m_socket;
-	pokerGame	 			m_pokergame;
+
 
 
 
 	vector<string> m_vecMsg;
 
+	vector<string>m_orgMsg;
 
 	RoundStatus	m_rs;
 	int 	m_RoundCount;

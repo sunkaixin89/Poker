@@ -1,11 +1,15 @@
 #include "common.h"
-#include<algorithm>
-#include<map>
-#include<stdio.h>
+#include <algorithm>
+#include <map>
+#include <stdio.h>
+bool more_hold( Poker poker1,  Poker poker2){
+    return poker1.point <= poker2.point;
+}
+
 int pokerType(vector<Poker> &pokers,int &highpt){
     if(pokers.size() != 5) return 0;
     //sort
-    sort(pokers.begin(),pokers.end());
+    sort(pokers.begin(),pokers.end(),more_hold);
     map<int,int> pts;
     int flush = 1;
     int stright = 1;
