@@ -170,8 +170,11 @@ void MsgProcessor::ResetRoundStatus()
 			const char* szMsg = s.c_str();
 			send(m_socket, szMsg, strlen(szMsg), 0);
 		}
-	else
-	{
+	else if(m_strategyName == "pro"){
+			string s =  m_pokergame.GetStrategy()->ActionAsPro();
+			const char* szMsg = s.c_str();
+			send(m_socket, szMsg, strlen(szMsg), 0);
+	}else{
 		string s =  m_pokergame.GetStrategy()->Action();
 		const char* szMsg = s.c_str();
 		send(m_socket, szMsg, strlen(szMsg), 0);

@@ -54,6 +54,59 @@ string MainStrategy::ActionAsAllRandom()
 		return "all_in \n";
 }
 
+string MainStrategy::ActionAsPro(){
+
+	if(m_pPokerGame->cround == pokerGame::ROUND_HOLD)
+	{
+		int type = HoldType();
+
+			   switch(type){
+			      case TOP_LEVEL:
+			      return "raise 200 \n";
+			      case HIGH_LEVEL:
+			      return "call \n";
+			      case BUTTOM_LEVEL:
+			      return "fold \n";
+			      default:
+			    	  return "check \n";
+			   }
+	}
+	else if(m_pPokerGame->cround == pokerGame::ROUND_FLOP
+			|| m_pPokerGame->cround == pokerGame::ROUND_TURN
+			|| m_pPokerGame->cround == pokerGame::ROUND_RIVER)
+	{
+
+		int otherPlayersNum = 0;
+		map<int,Player>::iterator it =  m_pPokerGame->players.begin();
+		while(it != m_pPokerGame->players.end())
+		{
+			if(it->second.action != ACTION_FOLD)
+			otherPlayersNum++;
+			it++;
+		}
+		otherPlayersNum--;
+
+		if(otherPlayersNum == 0)
+			return "check \n";
+
+		double p = ProCalculator::CalProLessThanMe(m_pPokerGame->hold_poker, m_pPokerGame->common_poker,
+				otherPlayersNum);
+
+		if(p > 0.7)
+			return "raise 100 \n";
+		else if(p > 0.35){
+	                return "check \n";
+		}else{
+			return "fold \n";
+		}
+	}
+	else
+	{
+		return "check \n";
+	}
+
+}
+
 string MainStrategy::Action(){
 
 	if(m_pPokerGame->cround == pokerGame::ROUND_HOLD)
@@ -93,13 +146,18 @@ string MainStrategy::Action(){
 				otherPlayersNum);
 
 		if(p > 0.7)
-			return "raise 200 \n";
-		else if(p > 0.6)
-			return "call \n";
-		else if(p > 0.35)
+			return "raise 100 \n";
+		else if(p > 0.5){
+		      if(m_pPokerGame->current < 500)
 			return "check \n";
-		else
-		{
+		      else
+	                return "fold \n";
+		}else if(p > 0.25){
+		      if(m_pPokerGame->current < 200)
+			return "check \n";
+		      else
+	                return "fold \n";
+		}else{
 			return "fold \n";
 		}
 	}

@@ -44,7 +44,8 @@ public:
 	//随机策略
 	string ActionAsAllRandom();
 
-	//
+	//全概率判断
+	string ActionAsPro();
 	string Action();
 protected:
 	int HoldType();
